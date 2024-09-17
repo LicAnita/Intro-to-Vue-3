@@ -16,9 +16,6 @@ app.component("product-display", {
           </div>
           <div class="product-info">
             <h1>{{ title }}</h1>
-            <!-- solution -->
-            <p>{{ sale }}</p>
-            <!-- solution -->
             <p v-if="inStock">In Stock</p>
             <p v-else>Out of Stock</p>
             <p> Shipping: {{shipping}} </p>
@@ -37,6 +34,8 @@ app.component("product-display", {
             <button class="button" :class="{ disabledButton: !inStock }" :disabled="!inStock" v-on:click="addToCart">Add to Cart</button>
           </div>
         </div>
+        <review-list v-if='reviews.length' :reviews="reviews"></review-list>
+        <review-form @review-submitted='addReview'></review-form>
       </div>`,
   data() {
     return {
@@ -58,15 +57,19 @@ app.component("product-display", {
           quantity: 0,
         },
       ],
+      reviews: [],
     };
   },
   methods: {
     addToCart() {
-        // como el carro está en el componente, tengo que emitir para que el padre lo levante
-      this.$emit('add-to-cart', this.variants[this.selectedVariant].id)
+      // como el carro está en el componente, tengo que emitir para que el padre lo levante
+      this.$emit("add-to-cart", this.variants[this.selectedVariant].id);
     },
     updateVariant(index) {
       this.selectedVariant = index;
+    },
+    addReview(review) {
+      this.reviews.push(review);
     },
   },
   computed: {
